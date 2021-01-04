@@ -1,7 +1,10 @@
 package com.example.myfavouriteseries;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,12 +52,46 @@ public class SeriesAdapter extends RecyclerView.Adapter {
                 
             }
         });
+
+        /*((ViewHolder) holder).x.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sArray.remove(position);
+                notifyDataSetChanged();
+            }
+        });*/
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);//مقاول. يمكنك وضعه داخل x.setOnClickListener(..{here})
+        ((ViewHolder) holder).x.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.setTitle("Delete!");
+                builder.setMessage("Are you sure you want to delete?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sArray.remove(position);
+                        notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("Undo", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //it is possible to leave a method empty as long as it doesn't do anything.
+                    }
+                });
+                AlertDialog alertDialog= builder.create();
+                alertDialog.show();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return sArray.size();
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView title;
@@ -62,6 +99,7 @@ public class SeriesAdapter extends RecyclerView.Adapter {
         public ImageView poster;
         public RatingBar ratingBar;
         public View view;
+        public ImageView x;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,6 +108,7 @@ public class SeriesAdapter extends RecyclerView.Adapter {
             showedGenre = itemView.findViewById(R.id.TextView3);
             ratingBar = itemView.findViewById(R.id.ratingBar);
             title= itemView.findViewById(R.id.textView3);
+            x= itemView.findViewById(R.id.delete);
         }
     }
 }
